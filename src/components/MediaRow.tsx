@@ -1,7 +1,12 @@
 import {MediaItem} from 'hybrid-types/DBTypes';
+type MediaItemProps = {
+    item: MediaItem;
+    setSelectedItem: (item: MediaItem | undefined) => void;
 
-const MediaRow = (props: {item: MediaItem}) => {
-    const { item } = props;
+};
+
+const MediaRow = (props: MediaItemProps ) => {
+    const { item, setSelectedItem } = props;
     return (
         <tr key={item.media_id}>
             <td>
@@ -9,9 +14,14 @@ const MediaRow = (props: {item: MediaItem}) => {
             </td>
             <td>{item.title}</td>
             <td>{item.description}</td>
-            <td>{new Date(item.created_at).toLocaleDateString()}</td>
+            <td>{new Date(item.created_at).toLocaleDateString('fi-FI')}</td>
             <td>{item.filesize}</td>
             <td>{item.media_type}</td>
+            <td>
+            <button onClick={() => {
+                setSelectedItem(item);
+            }}>View</button>
+            </td>
         </tr>
     );
   };
