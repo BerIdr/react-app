@@ -3,6 +3,7 @@ import SingleView from '../components/SingleView.tsx';
 import MediaRow from '../components/MediaRow.tsx';
 import { useState } from 'react';
 
+
 const mediaArray: MediaItem[] = [
     {
       media_id: 8,
@@ -48,7 +49,7 @@ const Home = () => {
     return (
       <>
       { selectedItem && <SingleView item={selectedItem} setSelectedItem={setSelectedItem} />}
-      <SingleView item={selectedItem} setSelectedItem={setSelectedItem} />
+     
         <h2>My Media</h2>
         <table>
           <thead>
