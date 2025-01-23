@@ -7,7 +7,7 @@ type MediaItemProps = {
 };
 
 const MediaRow = (props: MediaItemProps ) => {
-    const { item, setSelectedItem } = props;
+    const { item} = props;
     return (
         <tr key={item.media_id}>
             <td>
