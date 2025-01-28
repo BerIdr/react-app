@@ -14,8 +14,40 @@ const Home = () => {
    useEffect(() => {
     const getMedia = async () => { 
       try {
-      const json = await fetchData<MediaItem[]>('test.json');
-      setMediaArray(json);
+        // kaikki kuvat ilman thumbnailia / screenshotteja
+      const media = await fetchData<MediaItem[]>
+      (import.meta.env.VITE_MEDIA_API + '/media',
+      );
+
+      // haetaan mediat id:n mukaan, jotta saadaan thumbnailit
+      const mediaWithThumbs = await Promise.all
+      (media.map( async (item) => {
+        const mediaItem = await fetchData <MediaItem>(
+          import.meta.env.VITE_MEDIA_API + '/media/' + item.media_id,
+        );
+        mediaItem.filename = 
+          import.meta.env.VITE_FILE_URL + mediaItem.filename
+        mediaItem.thumbnail = mediaItem.thumbnail
+          ? import.meta.env.VITE_FILE_URL + mediaItem.thumbnail 
+          : null;
+
+        if (mediaItem.screenshots &&
+          typeof mediaItem.screenshots === 'string') 
+          {
+          mediaItem.screenshots = JSON.parse(
+            mediaItem.screenshots as string).map(
+            (screenshot: string) => {
+          return import.meta.env.VITE_FILE_URL + screenshot;
+            },
+          );
+        }
+          return mediaItem;
+      }),
+    );
+
+    console.log(mediaWithThumbs);
+
+      setMediaArray(mediaWithThumbs);
     } catch (error) {
       console.error((error as Error).message);
     }
