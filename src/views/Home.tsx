@@ -1,4 +1,4 @@
-import {MediaItem} from 'hybrid-types/DBTypes';
+import {MediaItem, MediaItemWithOwner, UserWithNoPassword} from 'hybrid-types/DBTypes';
 import SingleView from '../components/SingleView.tsx';
 import MediaRow from '../components/MediaRow.tsx';
 import { useEffect, useState } from 'react';
@@ -7,32 +7,34 @@ import { fetchData } from '../lib/functions.ts';
 
 
 const Home = () => {
-    const [mediaArray, setMediaArray] = useState<MediaItem[]>([]);
-    const [selectedItem, setSelectedItem] = useState<MediaItem | undefined>
+    const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
+    const [selectedItem, setSelectedItem] = useState<MediaItemWithOwner | undefined>
     (undefined);
 
    useEffect(() => {
     const getMedia = async () => { 
       try {
-        // kaikki kuvat ilman thumbnailia / screenshotteja
+        // kaikki mediat ilman omistajan tietoja
       const media = await fetchData<MediaItem[]>
       (import.meta.env.VITE_MEDIA_API + '/media',
       );
 
-      // haetaan mediat id:n mukaan, jotta saadaan thumbnailit
-      const mediaWithThumbs = await Promise.all
+      // haetaan id:n perusteella omistajan tiedot
+      const mediaWithOwner: MediaItemWithOwner[] = await Promise.all
       (media.map( async (item) => {
-        const mediaItem = await fetchData <MediaItem>(
-          import.meta.env.VITE_MEDIA_API + '/media/' + item.media_id,
+        const owner = await fetchData <UserWithNoPassword>(
+          import.meta.env.VITE_AUTH_API + '/users/' + item.media_id,
         );
-        mediaItem.filename = 
-          import.meta.env.VITE_FILE_URL + mediaItem.filename
-        mediaItem.thumbnail = mediaItem.thumbnail
-          ? import.meta.env.VITE_FILE_URL + mediaItem.thumbnail 
-          : null;
 
-        if (mediaItem.screenshots &&
-          typeof mediaItem.screenshots === 'string') 
+        const mediaItem: MediaItemWithOwner = {
+          ...item,
+          username: owner.username,
+        };
+
+        if (
+          mediaItem.screenshots &&
+          typeof mediaItem.screenshots === 'string'
+        ) 
           {
           mediaItem.screenshots = JSON.parse(
             mediaItem.screenshots as string).map(
@@ -45,9 +47,9 @@ const Home = () => {
       }),
     );
 
-    console.log(mediaWithThumbs);
+    console.log(mediaWithOwner);
 
-      setMediaArray(mediaWithThumbs);
+      setMediaArray(mediaWithOwner);
     } catch (error) {
       console.error((error as Error).message);
     }
@@ -71,6 +73,7 @@ const Home = () => {
               <th>Created</th>
               <th>Size</th>
               <th>Type</th>
+              <th>Owner</th>
             </tr>
           </thead>
           <tbody>
