@@ -1,37 +1,32 @@
-import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
-import {  MediaItemWithOwner } from "hybrid-types/DBTypes";
+import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
+import {NavigateFunction, useLocation, useNavigate} from 'react-router';
 
 const Single = () => {
-    const navigate: NavigateFunction = useNavigate();
-    const {state} = useLocation();
-    const item: MediaItemWithOwner = state.item;
+  const navigate: NavigateFunction = useNavigate();
+  const {state} = useLocation();
+  const item: MediaItemWithOwner = state.item;
   return (
     <>
-    <h2>Single</h2>
-        <h2>{item.title}</h2>
-      <p>{item.description}</p>
+      <h2>Single</h2>
+      <h3>{item.title}</h3>
       <p>{new Date(item.created_at).toLocaleString('fi-FI')}</p>
-      {item.media_type.includes('image') && (
+      {item.media_type.includes('image') ? (
         <img src={item.filename} alt={item.title} />
+      ) : (
+        <video src={item.filename} controls />
       )}
-      {item.media_type.includes('video') && (
-        <video src={item.filename} controls>
-
-          <source/>
-          Your browser does not support the video tag.
-        </video>
-      )}
-      <button className="goback" onClick={() => {navigate(-1)}}>
-
-        Go back
+      <p>{item.description}</p>
+      <p>Type: {item.media_type}</p>
+      <p>Size: {Math.round(item.filesize / 1024)} kB</p>
+      <button
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        go back
       </button>
-     
-    
     </>
-  )
-}
+  );
+};
 
 export default Single;
-
-
-
