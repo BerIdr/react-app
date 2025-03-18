@@ -1,45 +1,44 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom'; // Huomaa korjattu import!
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import './App.css';
 import Home from './views/Home';
 import Profile from './views/Profile';
 import Upload from './views/Upload';
 import Layout from './components/LayOut';
 import Single from './views/Single';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import {UserProvider} from './contexts/userContext';
-import Logout from './views/LogOut';
+import Example from './views/Example';
+import Login from './views/Login';
+import {UserProvider} from './contexts/UserContext';
+import Logout from './views/Logout';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return (
     <>
-      <h1>My App</h1>
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <UserProvider>
           <Routes>
             <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home />}></Route>
               <Route
-                path="/profile"
+                path="/Profile"
                 element={
                   <ProtectedRoute>
                     <Profile />
                   </ProtectedRoute>
                 }
-              />
+              ></Route>
               <Route
-                path="/upload"
+                path="/Upload"
                 element={
                   <ProtectedRoute>
                     <Upload />
                   </ProtectedRoute>
                 }
-              />
-              <Route path="/single" element={<Single />} />
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/register" element={<RegisterForm />} />
-              <Route path="/logout" element={<Logout />} />
+              ></Route>
+              <Route path="/Single" element={<Single />}></Route>
+              <Route path="/Example" element={<Example />}></Route>
+              <Route path="/Login" element={<Login />}></Route>
+              <Route path="/Logout" element={<Logout />}></Route>
             </Route>
           </Routes>
         </UserProvider>

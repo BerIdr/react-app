@@ -1,11 +1,9 @@
-import {useNavigate} from 'react-router';
-import {useAuthentication} from '../hooks/apiHooks';
 import {useForm} from '../hooks/FormHooks';
 import {Credentials} from '../types/LocalTypes';
+import {useUserContext} from '../hooks/ContextHooks';
 
 const LoginForm = () => {
-  const navigate = useNavigate();
-  const {postLogin} = useAuthentication();
+  const {handleLogin} = useUserContext();
   const initValues: Credentials = {
     username: '',
     password: '',
@@ -13,12 +11,7 @@ const LoginForm = () => {
 
   const doLogin = async () => {
     try {
-      const loginResult = await postLogin(inputs as Credentials);
-      console.log('doLogin result', loginResult);
-      if (loginResult) {
-        localStorage.setItem('token', loginResult.token);
-        navigate('/');
-      }
+      handleLogin(inputs as Credentials);
     } catch (error) {
       console.error((error as Error).message);
       // Display error to user here(?)
@@ -27,16 +20,20 @@ const LoginForm = () => {
 
   const {handleSubmit, handleInputChange, inputs} = useForm(
     doLogin,
-    initValues
+    initValues,
   );
 
   return (
     <>
       <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form
+        className="flex flex-col items-center justify-center"
+        onSubmit={handleSubmit}
+      >
+        <div className="flex w-4/5 flex-col">
           <label htmlFor="loginusername">Username</label>
           <input
+            className="my-2.5 rounded-md border p-2.5"
             name="username"
             type="text"
             id="loginusername"
@@ -45,9 +42,10 @@ const LoginForm = () => {
             // value={inputs.username}
           />
         </div>
-        <div>
+        <div className="flex w-4/5 flex-col">
           <label htmlFor="loginpassword">Password</label>
           <input
+            className="my-2.5 rounded-md border p-2.5"
             name="password"
             type="password"
             id="loginpassword"
@@ -56,7 +54,12 @@ const LoginForm = () => {
             // value={inputs.password}
           />
         </div>
-        <button type="submit">Login</button>
+        <button
+          className="my-2.5 block w-4/5 rounded-md bg-stone-500 p-2 text-center transition-all duration-500 ease-in-out hover:bg-stone-700"
+          type="submit"
+        >
+          Login
+        </button>
       </form>
     </>
   );

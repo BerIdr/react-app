@@ -8,7 +8,7 @@ const Logout = () => {
     handleLogout();
   }, []);
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return <div>Logout</div>;
 };
 
 export default Logout;

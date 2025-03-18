@@ -1,4 +1,5 @@
-import {Navigate, useLocation} from 'react-router-dom';
+// ProtectedRoute.tsx
+import {Navigate, useLocation} from 'react-router';
 import {useUserContext} from '../hooks/ContextHooks';
 
 const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
@@ -8,6 +9,7 @@ const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
   console.log('lokaatio', location);
 
   if (!user) {
+    // replace and state are used to redirect to origin when page is refreshed
     return <Navigate to="/" replace state={{from: location}} />;
   }
 
